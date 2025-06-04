@@ -1,6 +1,6 @@
 show DATABASES;
 
-use ytdatabase;
+use database;
 
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -11,7 +11,7 @@ CREATE TABLE users (
 
 INSERT INTO users (username, password, email) 
 VALUES 
-('MithranYT', 'Sensitive123#', 'LearnWithMithran@example.com'),
+('Balaji', 'Sensitive123#', 'balaji1892001@gmail.com'),
 ('Arun', 'Arun123', 'arun@example.com'),
 ('Surya', 'Surya123', 'surya@example.com');
 
