@@ -17,12 +17,13 @@
 - **No NAT for Database**: If required for database patching, Map Natgateway to Database Route table
 
 ## 4. Create 3 Security Groups
-
-- **WebServer-SG**: Allows SSH (ALL), HTTP (ALL), HTTPS (ALL).
-- **AppServer-SG**: Allows 5000 from WebServer-SG, SSH from WebServer-SG, 80 from WebServer-SG, 443 from WebServer-SG.
+_ **Internet_LB-SG**:Allows SSH (ALL), HTTP (ALL), HTTPS (ALL).
+- **WebServer-SG**: Allows SSH, HTTP, HTTPS from Internet_LB-SG.
+- **Internal_LB-SG**: Allows SSH, HTTP,5000 HTTPS from WebServer-SG
+- **AppServer-SG**: Allows 5000 from Internal_LB-SG, SSH Internal_LB-SG, 80 Internal_LB-SG, 443 Internal_LB-SG.
 - **DB-SG**: Allows 3306 from AppServer-SG.
 
-Task: Instead of three Security Group create Five Security Groups
+
 
 ## 5. Create Route 53 (R53) Hosted Zone
 
@@ -47,15 +48,19 @@ Task: Instead of three Security Group create Five Security Groups
 
 - Launch an EC2 instance in the private subnet with AppServer-SG.
 
-## 10. Command to Login to App Server
+## 10. Create Auto Scaling 
+
+- Create for Web server & App Server
+
+## 11. Command to Login to App Server
 
 ```bash
 vi LearnWithMithran.pem
-chmod 400 LearnWithMithran.pem
-ssh -i LearnWithMithran.pem ec2-user@10.0.4.162
+chmod 400 key.pem
+ssh -i key.pem ec2-user@10.0.4.162
 ```
 
-## 11. Setup Database
+## 12. Setup Database
 
 ```bash
 sudo yum install mysql -y
@@ -64,7 +69,7 @@ mysql -h ytdb.cpk8oagkgyaz.ap-south-1.rds.amazonaws.com -P 3306 -u admin -p
 
 - Provide queries from **commands.sql** file to create DB, tables, and insert data into the table.
 
-## 12. Setup App Server
+## 13. Setup App Server
 
 ```bash
 sudo yum install python3 python3-pip -y
@@ -78,7 +83,7 @@ cat output.log
 curl http://10.0.3.47:5000/login
 ```
 
-## 13. Setup Web Server
+## 14. Setup Web Server
 
 ```bash
 sudo yum install httpd -y
@@ -87,7 +92,7 @@ cd /var/www/html/
 touch index.html script.js styles.css
 ```
 
-## 14. Create Application Load Balancer (ALB)
+## 15. Create Application Load Balancer (ALB)
 
 - Create **Backend Target Group** for App Server EC2 with:
   - Port: 5000
@@ -102,18 +107,11 @@ touch index.html script.js styles.css
   - Listener Port: 80
   - Attach the Target Group
 
-## 15. Configure Route 53 to Load Balancer
+## 16. Configure Route 53 to Load Balancer
 
 - Create an **A record** with alias pointing to the Frontend Load Balancer.
 
-## 16. Attach ACM Certificate to Load Balancer
+## 17. Attach ACM Certificate to Load Balancer
 
 ---
 
-### Tasks to be completed
-
-- [ ] Instead of three Security Group create Five Security Group
-- [ ] Create a Internal Load Balancer for AppServer
-- [ ] Create a AutoScaling for Webserver & Appserver
-- [ ] Using Cloudcraft/draw.io Draw a Three tier Diagram
-- [ ] Read the 4 Part DR strategies document [Click Me](https://aws.amazon.com/blogs/architecture/disaster-recovery-dr-architecture-on-aws-part-i-strategies-for-recovery-in-the-cloud/)
